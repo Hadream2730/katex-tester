@@ -2,18 +2,28 @@ $(function () {
     var gpt_4_1_item = null;
     var gpt_5_1_item = null;
     $('#problem-number').val('1523');
+
+    function displayAll(){
+        const problem_number = $('#problem-number').val();
+        console.log('Problem Number:', problem_number);
+        gpt_4_1_item = get_gpt_4_1_from_index(problem_number);
+        gpt_5_1_item = get_gpt_5_1_from_index(problem_number);
+        console.log('GPT-4.1 Item:', gpt_4_1_item);
+        console.log('GPT-5.1 Item:', gpt_5_1_item);
+        display_problem();
+        display_solution();
+        display_answer();
+        display_model1_output();
+        display_model2_output();
+
+    }
   $('#display-button').click(function () {
-    const problem_number = $('#problem-number').val();
-    console.log('Problem Number:', problem_number);
-    gpt_4_1_item = get_gpt_4_1_from_index(problem_number);
-    gpt_5_1_item = get_gpt_5_1_from_index(problem_number);
-    console.log('GPT-4.1 Item:', gpt_4_1_item);
-    console.log('GPT-5.1 Item:', gpt_5_1_item);
-    display_problem();
-    display_solution();
-    display_answer();
-    display_model1_output();
-    display_model2_output();
+      displayAll();
+  });
+  $('#problem-number').on('keypress', function (e) {
+      if (e.which === 13) { // Enter key pressed
+          displayAll();
+      }
   });
   function get_gpt_4_1_from_index(index) {
     for(let i=0; i < gpt_4_1_data.length; i++) {
