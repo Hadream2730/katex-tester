@@ -44,6 +44,7 @@ $(function () {
             break;
         }
     }
+    $('#problem-number').val(next_problem_number);
     displayAll(next_problem_number);
   }
   function showPrevious() {
@@ -59,6 +60,8 @@ $(function () {
             break;
         }
     }
+    $('#problem-number').val(previous_problem_number);
+    displayAll(previous_problem_number);
 }
   function get_gpt_4_1_from_index(index) {
     for(let i=0; i < gpt_4_1_data.length; i++) {
