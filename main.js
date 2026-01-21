@@ -20,11 +20,46 @@ $(function () {
   $('#display-button').click(function () {
       displayAll();
   });
+  $('#prev-button').click(function () {
+      showPrevious();
+  });
+  $('#next-button').click(function () {
+      showNext();
+  });
   $('#problem-number').on('keypress', function (e) {
       if (e.which === 13) { // Enter key pressed
           displayAll();
       }
   });
+  function showNext() {
+    const problem_number = $('#problem-number').val();
+    let next_problem_number = 0;
+    for(let i=0; i < gpt_4_1_data.length; i++) {
+        if(gpt_4_1_data[i].index == problem_number) {
+            if(i == gpt_4_1_data.length - 1) {
+                next_problem_number = gpt_4_1_data[0].index;
+                break;
+            }
+            next_problem_number =  gpt_4_1_data[i+1].index;
+            break;
+        }
+    }
+    displayAll(next_problem_number);
+  }
+  function showPrevious() {
+    const problem_number = $('#problem-number').val();
+    let previous_problem_number = 0;
+    for(let i=0; i < gpt_4_1_data.length; i++) {
+        if(gpt_4_1_data[i].index == problem_number) {
+            if(i == 0) {
+                previous_problem_number = gpt_4_1_data[gpt_4_1_data.length - 1].index;
+                break;
+            }
+            previous_problem_number =  gpt_4_1_data[i-1].index;
+            break;
+        }
+    }
+}
   function get_gpt_4_1_from_index(index) {
     for(let i=0; i < gpt_4_1_data.length; i++) {
         if(gpt_4_1_data[i].index == index) {
