@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it@latest/dist/markdown-it.min.js"></script>
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div id="content"></div>
+
+  <script>
+    // Helper function to protect LaTeX before markdown processing
+    function protectLatex(text) {
+      if (!text) return { text: '', latexBlocks: [] };
+      
+      const latexBlocks = [];
+      let counter = 0;
+      
+      // Protect $$ blocks first (display math)
+      text = text.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
+        const placeholder = `__LATEX_DISPLAY_${counter}__`;
+        latexBlocks.push({ content: match });
+        counter++;
+        return placeholder;
+      });
+      
+      // Protect \[ \] blocks (display math)
+      text = text.replace(/\\\[([\s\S]*?)\\\]/g, (match) => {
+        const placeholder = `__LATEX_DISPLAY_${counter}__`;
+        latexBlocks.push({ content: match });
+        counter++;
+        return placeholder;
+      });
+      
+      // Protect \( \) blocks (inline math)
+      text = text.replace(/\\\(([\s\S]*?)\\\)/g, (match) => {
+        const placeholder = `__LATEX_INLINE_${counter}__`;
+        latexBlocks.push({ content: match });
+        counter++;
+        return placeholder;
+      });
+      
+      // Protect $ blocks (inline math) - must be last, after $$ is protected
+      text = text.replace(/\$([^\$\n]+?)\$/g, (match) => {
+        if (match.includes('__LATEX_')) return match;
+        const placeholder = `__LATEX_INLINE_${counter}__`;
+        latexBlocks.push({ content: match });
+        counter++;
+        return placeholder;
+      });
+      
+      return { text, latexBlocks };
+    }
+    
+    // Helper function to restore LaTeX after markdown processing
+    function restoreLatex(html, latexBlocks) {
+      if (!html || !latexBlocks || latexBlocks.length === 0) return html;
+      let result = html;
+      latexBlocks.forEach((block, index) => {
+        const displayPlaceholder = `LATEX_DISPLAY_${index}`;
+        const inlinePlaceholder = `LATEX_INLINE_${index}`;
+        result = result.replace(displayPlaceholder, block.content);
+        result = result.replace(inlinePlaceholder, block.content);
+      });
+      return result;
+    }
+
+    const md = window.markdownit();
+    const text = "\\[\ne^{ct} v = \\int \\left[ k e^{(c-b)t} - g e^{ct} \\right] dt + C\n\\]";
+
+    const el = document.getElementById("content");
+
+    // 1️⃣ Protect LaTeX before markdown processing
+    const { text: protectedText, latexBlocks } = protectLatex(text);
+    
+    // 2️⃣ Markdown → HTML
+    el.innerHTML = md.render(protectedText);
+    
+    // 3️⃣ Restore LaTeX delimiters
+    el.innerHTML = restoreLatex(el.innerHTML, latexBlocks);
+
+    // 4️⃣ HTML → KaTeX render
+    renderMathInElement(el, {
+      delimiters: [
+        {left: "$$", right: "$$", display: true},
+        {left: "$", right: "$", display: false},
+        {left: "\\[", right: "\\]", display: true},  // Fixed: double backslashes
+      ],
+      throwOnError: false
+    });
+  </script>
+</body>
+</html>
