@@ -2,212 +2,516 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Problem Solver UI</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css" integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js" integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ" crossorigin="anonymous"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="./script.js"></script>
-    <script src="./main.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css" integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js" integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js" integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="./script.js"></script>
+  <script src="./main.js"></script>
   <style>
     :root {
-      --bg: #f7f7f8;
-      --card: #e6e6e6;
-      --text: #333;
-      --border: #d0d0d0;
-      --radius: 10px;
-      --btn: #4f46e5;
-      --btn-hover: #4338ca;
+      --bg-gradient-start: #f8fafc;
+      --bg-gradient-end: #e2e8f0;
+      --card-bg: #ffffff;
+      --card-shadow: rgba(0, 0, 0, 0.08);
+      --card-shadow-hover: rgba(0, 0, 0, 0.12);
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+      --border: #e2e8f0;
+      --border-focus: #6366f1;
+      --radius: 16px;
+      --radius-sm: 12px;
+      --btn-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --btn-primary-hover: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      --btn-secondary: #f1f5f9;
+      --btn-secondary-hover: #e2e8f0;
+      --accent-blue: #3b82f6;
+      --accent-purple: #8b5cf6;
+      --accent-green: #10b981;
+      --section-header: #475569;
     }
 
     * {
       box-sizing: border-box;
-      font-family: "Segoe UI", system-ui, sans-serif;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      padding: 40px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      padding: 0;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .header {
+      background: var(--card-bg);
+      box-shadow: 0 2px 8px var(--card-shadow);
+      padding: 24px 0;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      background: var(--btn-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 14px;
     }
 
     .container {
-      max-width: 1100px;
-      margin: auto;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px 64px;
+    }
+
+    .control-panel {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .control-panel:hover {
+      box-shadow: 0 6px 20px var(--card-shadow-hover);
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .control-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     label {
       font-weight: 600;
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    .row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    input, select {
-      padding: 10px 12px;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
+      color: var(--section-header);
       font-size: 14px;
-      min-width: 160px;
+      white-space: nowrap;
     }
 
-    button {
-      padding: 10px 18px;
-      border-radius: var(--radius);
+    input[type="number"] {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
+      font-size: 15px;
+      min-width: 140px;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    select {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 2px solid var(--border);
+      font-size: 14px;
+      min-width: 180px;
+      background: var(--card-bg);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
       border: none;
-      background: var(--btn);
-      color: white;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
     }
 
-    button:hover {
-      background: var(--btn-hover);
+    .btn-primary {
+      background: var(--btn-primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
 
-    textarea {
-      width: 100%;
-      min-height: 140px;
-      padding: 16px;
-      border-radius: var(--radius);
-      border: none;
-      background: var(--card);
-      resize: vertical;
-      font-size: 14px;
+    .btn-primary:hover {
+      background: var(--btn-primary-hover);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--btn-secondary);
+      color: var(--text-primary);
+      border: 2px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--btn-secondary-hover);
+      border-color: var(--text-secondary);
     }
 
     .section {
-      margin-bottom: 30px;
+      margin-bottom: 32px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      transition: box-shadow 0.3s ease;
     }
 
-    .section.large textarea {
-      min-height: 180px;
+    .section:hover {
+      box-shadow: 0 6px 20px var(--card-shadow-hover);
     }
 
-    .models {
+    .section-header {
       display: flex;
-      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
     }
 
-    .model-box {
+    .section-header label {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .section-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
       display: flex;
-      flex-direction: column;
-      width: calc(50% - 15px);
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
     }
 
-    .model-box textarea {
-      min-height: 320px;
+    .icon-problem {
+      background: linear-gradient(135deg, var(--accent-blue), #2563eb);
+      color: white;
     }
 
-    @media (max-width: 800px) {
-      .models {
-        grid-template-columns: 1fr;
-      }
+    .icon-solution {
+      background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+      color: white;
+    }
+
+    .icon-answer {
+      background: linear-gradient(135deg, var(--accent-green), #059669);
+      color: white;
+    }
+
+    .display-box {
+      overflow-y: auto;
+      padding: 20px;
+      background: #f8fafc;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      white-space: pre-line;
+      line-height: 1.8;
+      font-size: 15px;
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    .display-box:hover {
+      border-color: var(--border-focus);
+    }
+
+    .display-box::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .display-box::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+
+    .display-box::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    .display-box::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
     }
 
     #problem-display {
-      height: 380px;
-      overflow-y: auto;
-      padding: 16px;
-      background: var(--card);
-      border-radius: var(--radius);
-      border: none;
-      white-space: pre-line;
+      height: 400px;
+      min-height: 200px;
     }
     
     #solution-display {
-      height: 380px;
-      overflow-y: auto;
-      padding: 16px;
-      background: var(--card);
-      border-radius: var(--radius);
-      border: none;
-      white-space: pre-line;
+      height: 400px;
+      min-height: 200px;
     }
+
     #answer-display {
-      height: 180px;
-      overflow-y: auto;
-      padding: 16px;
-      background: var(--card);
+      height: 200px;
+      min-height: 120px;
+    }
+
+    .models-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .model-box {
+      background: var(--card-bg);
       border-radius: var(--radius);
-      border: none;
-      white-space: pre-line;
+      padding: 24px;
+      box-shadow: 0 4px 12px var(--card-shadow);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .model-box:hover {
+      box-shadow: 0 6px 20px var(--card-shadow-hover);
+      transform: translateY(-2px);
+    }
+
+    .model-box-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .model-box-header label {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .model-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .model-badge-1 {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
+    }
+
+    .model-badge-2 {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
     }
 
     #model1-display, #model2-display {
-      height: 680px;
-      overflow-y: auto;
-      padding: 16px;
-      background: var(--card);
-      border-radius: var(--radius);
-      border: none;
-      white-space: pre-line;
+      height: 700px;
+      min-height: 400px;
+    }
+
+    @media (max-width: 1024px) {
+      .models-container {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 0 24px 48px;
+      }
+
+      .header-content {
+        padding: 0 24px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .control-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .control-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      input[type="number"],
+      select {
+        flex: 1;
+      }
+
+      .btn {
+        flex: 1;
+        justify-content: center;
+      }
+
+      #problem-display,
+      #solution-display {
+        height: 300px;
+      }
+
+      #model1-display,
+      #model2-display {
+        height: 500px;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section,
+    .model-box,
+    .control-panel {
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    .katex {
+      font-size: 1.1em;
+    }
+
+    .katex-display {
+      margin: 1.5em 0;
     }
   </style>
 </head>
 <body>
 
+  <div class="header">
+    <div class="header-content">
+      <h1>Problem Solver</h1>
+      <p>Compare AI model solutions for physics problems</p>
+    </div>
+  </div>
+
   <div class="container">
 
-    <!-- Problem Number -->
-    <div class="row">
-      <label>Problem Number:</label>
-      <input type="number" id="problem-number" placeholder="1523">
-      <button id="prev-button">Prev</button>
-      <button id="display-button">Display</button>
-      <button id="next-button">Next</button>
+    <!-- Control Panel -->
+    <div class="control-panel">
+      <div class="control-row">
+        <div class="control-group">
+          <label for="problem-number">Problem Number:</label>
+          <input type="number" id="problem-number" placeholder="1523">
+        </div>
+        <div class="control-group" style="margin-left: auto;">
+          <button class="btn btn-secondary" id="prev-button">← Prev</button>
+          <button class="btn btn-primary" id="display-button">Display</button>
+          <button class="btn btn-secondary" id="next-button">Next →</button>
+        </div>
+      </div>
     </div>
 
     <!-- Problem -->
-    <div class="section large">
-      <label>Problem:</label>
-      <div scrollable placeholder="Text Area" id="problem-display"></div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-problem">P</div>
+        <label>Problem</label>
+      </div>
+      <div class="display-box" id="problem-display"></div>
     </div>
 
     <!-- Solution -->
-    <div class="section large">
-      <label>Solution:</label>
-      <div placeholder="Text Area" id="solution-display"></div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-solution">S</div>
+        <label>Solution</label>
+      </div>
+      <div class="display-box" id="solution-display"></div>
     </div>
 
     <!-- Answer -->
-    <div class="section large">
-      <label>Answer:</label>
-      <div placeholder="Text Area" id="answer-display"></div>
+    <div class="section">
+      <div class="section-header">
+        <div class="section-icon icon-answer">A</div>
+        <label>Answer</label>
+      </div>
+      <div class="display-box" id="answer-display"></div>
     </div>
 
-    <!-- Models -->
-    <div class="models">
-
+    <!-- Models Comparison -->
+    <div class="models-container">
       <div class="model-box">
-        <div class="row">
-          <label>Model 1:</label>
-          <select id="model1-select">
-            <option>Select Box</option>
-          </select>
+        <div class="model-box-header">
+          <label>Model 1</label>
+          <span class="model-badge model-badge-1">GPT-4.1</span>
         </div>
-        <div id="model1-display"></div>
+        <select id="model1-select" style="margin-bottom: 16px;">
+          <option>Select Model</option>
+        </select>
+        <div class="display-box" id="model1-display"></div>
       </div>
 
       <div class="model-box">
-        <div class="row">
-          <label>Model 2:</label>
-          <select id="model1-select">
-            <option>Select Box</option>
-          </select>
+        <div class="model-box-header">
+          <label>Model 2</label>
+          <span class="model-badge model-badge-2">GPT-5.1</span>
         </div>
-        <div id="model2-display"></div>
+        <select id="model2-select" style="margin-bottom: 16px;">
+          <option>Select Model</option>
+        </select>
+        <div class="display-box" id="model2-display"></div>
       </div>
-
     </div>
 
   </div>
